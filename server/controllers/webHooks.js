@@ -53,3 +53,5 @@ const clerkWebhooks = async(req,res)=>{
         res.json({succes:false,message:error?.message || "User Error occured"})
     }
 }
+
+export default clerkWebhooks;

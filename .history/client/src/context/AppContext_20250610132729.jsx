@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { dummyCourses } from "../assets/assets";
 import humanizeDuration from "humanize-duration";
-
+import { useAuth, useUser } from "@clerk/clerk-react";
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
@@ -28,6 +28,7 @@ export const AppContextProvider = (props) => {
         fetchAllCourses();
         fetchUserEnrolledCourses();
     }, []);
+    
 
     // ✅ Calculate average rating
     const calculateRating = (course) => {
@@ -86,7 +87,7 @@ export const AppContextProvider = (props) => {
         setIsEducator,
         enrolledCourses,
         setEnrolledCourses,
-        fetchAllCourses,
+        fetchUserEnrolledCourses,
     };
 
     return (

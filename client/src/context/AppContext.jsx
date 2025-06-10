@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { dummyCourses } from "../assets/assets";
-
+import {useAuth,useUser} from "@clerk/clerk-react"
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
@@ -30,6 +30,15 @@ export const AppContextProvider = (props) => {
         fetchAllCourses();
         fetchUserEnrolledCourses();
     }, []);
+
+   const logToken = async()=>{
+    console.log(await getToken());
+   }
+    useEffect(()=>{
+       if(user){
+         logToken() 
+       } 
+    },[user])
 
     // Calculate average rating for a course
     const calculateRating = (course) => {

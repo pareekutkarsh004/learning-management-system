@@ -86,7 +86,7 @@ export const AppContextProvider = (props) => {
         setIsEducator,
         enrolledCourses,
         setEnrolledCourses,
-        fetchAllCourses,
+        fetchUserEnrolledCourses,
     };
 
     return (

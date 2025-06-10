@@ -6,4 +6,4 @@
  //add educator role
  educatorRouter.get('/update-role', updateRoleToEducator )
 
- export default educatorRouter;
+ export default educatorRouter; 

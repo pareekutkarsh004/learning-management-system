@@ -1,0 +1,21 @@
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import searchBar from '../../searchBar'
+function CourseList() {
+  const navigate = useNavigate();
+  return (
+    <>
+      <div>
+        <div>
+        <div>
+          <h1>Course List</h1>
+          <p className='text-gray-500'><span className='text-blue-600 cursor-pointer' onClick={()=>navigate('/')}>Home </span>/<span> Course List</span></p>
+        </div>
+        <searchBar/>
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default CourseList

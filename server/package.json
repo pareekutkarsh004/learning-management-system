@@ -5,9 +5,9 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "server": "nodemon server.js",
-    "start": "node server.js"
-  },
+  "start": "nodemon server.js"
+},
+
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,9 +20,10 @@
     "express": "^5.1.0",
     "mongoose": "^8.13.2",
     "multer": "^1.4.5-lts.2",
-    "nodemon": "^3.1.9",
-    "server": "file:",
     "stripe": "^18.0.0",
     "svix": "^1.42.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

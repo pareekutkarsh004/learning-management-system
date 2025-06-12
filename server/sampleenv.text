@@ -1,8 +1,20 @@
-MONGODB_URI=mongodb+srv://lms:lms123@cluster0.ifwloeb.mongodb.net
-CLERK_WEBHOOK_SECRET = whsec_ekRRb8AbS58Dahb+pXUljZ+J3ZGxAHdf
-CLERK_PUBLISHABLE_KEY=pk_test_ZGVjZW50LWVhcndpZy02LmNsZXJrLmFjY291bnRzLmRldiQ
-CLERK_SECRET_KEY=sk_test_mr26mQmYyDQYXOTN17jSnUMrDeGsJgfPlINyRaD3VJ
+# Currency used for payments
+CURRENCY='your_currency_here'  # Example: 'USD'
 
-CLOUDINARY_NAME="dpp9pu28i"
-CLOUDINARY_API_KEY="852258617344489"
-CLOUDINARY_SECRET_KEY="9eA9HYg4VJ3yrmry6XoHSTbpaH0" 
+# MongoDB connection URI
+MONGODB_URI='your_mongodb_uri_here'
+
+# Clerk authentication
+CLERK_WEBHOOK_SECRET='your_clerk_webhook_secret_here'
+CLERK_PUBLISHABLE_KEY='your_clerk_publishable_key_here'
+CLERK_SECRET_KEY='your_clerk_secret_key_here'
+
+# Cloudinary credentials
+CLOUDINARY_NAME='your_cloudinary_name_here'
+CLOUDINARY_API_KEY='your_cloudinary_api_key_here'
+CLOUDINARY_SECRET_KEY='your_cloudinary_secret_key_here'
+
+# Stripe credentials
+STRIPE_PUBLISHABLE_KEY='your_stripe_publishable_key_here'
+STRIPE_SECRET_KEY='your_stripe_secret_key_here'
+STRIPE_WEBHOOK_SECRET='your_stripe_webhook_secret_here'

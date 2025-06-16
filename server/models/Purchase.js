@@ -8,7 +8,7 @@ const PurchaseSchema = new mongoose.Schema({
     },
     userID :{
         type: String,
-        ref : User,
+        ref : 'User',
         required: true
     },
     amount : {type:Number, required :true},

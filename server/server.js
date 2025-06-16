@@ -3,7 +3,7 @@ import express from "express"
 import cors from "cors"
 import 'dotenv/config'
 import connectDB from "./configs/mongodb.js"
-import clerkWebhooks, { stripeWebhooks } from "./controllers/webHooks.js"
+import {clerkWebhooks,  stripeWebhooks } from "./controllers/webHooks.js"
 import educatorRouter from "./route/educatorRoutes.js"
 import { clerkMiddleware } from "@clerk/express"
 import connectCloudinary from "./configs/cloudinary.js"

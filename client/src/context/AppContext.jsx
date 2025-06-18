@@ -47,11 +47,11 @@ export const AppContextProvider = (props) => {
         try {
             const token = await getToken();
 
-            const response = await axios.get(backendURL +'/api/user/data',{headers: 
+            const data = await axios.get(backendURL +'/api/user/data',{headers: 
                 {Authorization: `Bearer ${token}`}})
             
-            if(response.data.success){
-                setUserData(response.data.user)
+            if(data.success){
+                setUserData(data.user)
             }
             else{
                 toast.error(data.message)

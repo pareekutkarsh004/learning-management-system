@@ -6,6 +6,8 @@ import assets from '../../../assets/assets';
 import humanizeDuration from 'humanize-duration';
 import Footer from '../../student/Footer';
 import YouTube from 'react-youtube';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function CDetails() {
   const { id } = useParams();
@@ -22,24 +24,80 @@ function CDetails() {
     calculateNoOfLectures,
     currency,
     user,
+    backendUrl,
+    userData,
+    getToken
+
   } = useContext(AppContext);
 
-  useEffect(() => {
-    if (allCourses && allCourses.length > 0) {
-      const foundCourse = allCourses.find(course => course._id === id);
-      if (foundCourse) {
-        setCourse(foundCourse);
-        if (foundCourse.courseContent?.length > 0) {
-          setExpandedChapters([0]);
-        }
-        if (user && foundCourse.enrolledStudents.includes(user._id)) {
-          setIsEnrolled(true);
-        }
-      } else {
-        console.error('Course not found');
+  const fetchCourseData = async()=>{
+    try {
+      
+      const {data} = await axios.get(backendUrl +'/api/course/'+id)
+
+      if(data.success){
+        setCourse(data.course)
       }
+      else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
     }
-  }, [allCourses, id, user]);
+  }
+
+  const enrollCourse = async()=>{
+    try {
+      if(!userData){
+        return toast.warn('Login to Enroll')
+      }
+      if(isEnrolled){
+        return toast.warn('Already Enrolled')
+      }
+
+      const token  = await getToken();
+
+      const {data}  = await axios.post(backendUrl +'/api/user/purchase',{courseId:course._id},
+        {headers:{Authorization :`Bearer ${token}`}})
+
+      if(data.success){
+        const {session_url} = data
+        window.location.replace(session_url)
+      }
+      else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  useEffect(()=>{
+    fetchCourseData()
+  },[])
+
+  useEffect(()=>{
+   if(userData && course)
+    setIsEnrolled(userData.enrollCourse.includes(course._id))
+  },[userData , course])
+
+
+  // useEffect(() => {
+  //   if (allCourses && allCourses.length > 0) {
+  //     const foundCourse = allCourses.find(course => course._id === id);
+  //     if (foundCourse) {
+  //       setCourse(foundCourse);
+  //       if (foundCourse.courseContent?.length > 0) {
+  //         setExpandedChapters([0]);
+  //       }
+  //       if (user && foundCourse.enrolledStudents.includes(user._id)) {
+  //         setIsEnrolled(true);
+  //       }
+  //     } else {
+  //       console.error('Course not found');
+  //     }
+  //   }
+  // }, [allCourses, id, user]);
 
   const toggleChapter = (index) => {
     setExpandedChapters((prev) =>
@@ -95,7 +153,8 @@ function CDetails() {
 
           <p className="text-sm">
             Course by <span className="text-blue-600 underline">
-              {course.instructorName || "Unknown Instructor"}
+              {course.dummyEducatorData?.name || "Unknown Instructor"}  
+              
             </span>
           </p>
 
@@ -230,7 +289,7 @@ function CDetails() {
               className={`w-full py-3 rounded text-white font-medium ${isEnrolled ? 'bg-green-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
                 }`}
               disabled={isEnrolled}
-              onClick={() => setIsEnrolled(true)}
+              onClick={enrollCourse}
             >
               {isEnrolled ? 'Already Enrolled' : 'Enroll Now'}
             </button>

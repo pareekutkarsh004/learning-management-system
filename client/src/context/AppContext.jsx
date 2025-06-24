@@ -1,4 +1,77 @@
 import { createContext, useEffect, useState } from "react";
+<<<<<<< HEAD
+import { dummyCourses } from "../assets/assets";
+import {useAuth,useUser} from "@clerk/clerk-react"
+import humanizeDuration from "humanize-duration";
+export const AppContext = createContext();
+
+export const AppContextProvider = (props) => {
+    const currency = import.meta.env.VITE_CURRENCY || "₹"; // fallback to ₹ if undefined
+    
+    const {getToken} = useAuth()
+    const {user} =useUser() 
+    const [allCourses, setAllCourses] = useState([]);
+    const [isEducator, setIsEducator] = useState(true);
+    const [enrolledCourses, setEnrolledCourses] = useState([]);
+
+    // Fetch all courses from the server or use dummy
+    const fetchAllCourses = async () => {
+        setAllCourses(dummyCourses);
+        // In real use-case, you can fetch from API here
+        // const response = await axios.get('/api/courses');
+        // setAllCourses(response.data);
+    };  //fetch enrolled courses from the server or use dummy
+    const fetchUserEnrolledCourses = async () => {
+        // In real use-case, you can fetch from API here
+        // const response = await axios.get('/api/enrolled-courses');
+        // setEnrolledCourses(response.data);
+        setEnrolledCourses(dummyCourses); // Using dummy data for now
+    };
+
+    useEffect(() => {
+        fetchAllCourses();
+        fetchUserEnrolledCourses();
+    }, []);
+
+   const logToken = async()=>{
+    console.log(await getToken());
+   }
+    useEffect(()=>{
+       if(user){
+         logToken() 
+       } 
+    },[user])
+
+    // Calculate average rating for a course
+    const calculateRating = (course) => {
+        if (!course.courseRatings || course.courseRatings.length === 0) return 0;
+        const totalRating = course.courseRatings.reduce(
+            (sum, rating) => sum + rating.rating,
+            0
+        );
+        return (totalRating / course.courseRatings.length).toFixed(1);
+    };
+
+    // ✅ Calculate chapter time
+    const calculateChapterTime = (chapter) => {
+        let time = 0;
+        chapter.chapterContent.forEach((lecture) => {
+            time += lecture.lectureDuration;
+        });
+        return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
+    };
+
+    // ✅ Calculate course duration
+    const calculateCourseDuration = (course) => {
+        let time = 0;
+        course.courseContent.forEach((chapter) => {
+            chapter.chapterContent.forEach((lecture) => {
+                time += lecture.lectureDuration;
+            });
+        });
+        return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
+    };
+=======
 import { useAuth, useUser } from "@clerk/clerk-react";
 import humanizeDuration from "humanize-duration";
 import axios from "axios";
@@ -345,6 +418,7 @@ export const AppContextProvider = ({ children }) => {
     );
     return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
   };
+>>>>>>> main
 
     // ✅ Count total number of lectures in a course
     // Function to calculate number of lectures in a course

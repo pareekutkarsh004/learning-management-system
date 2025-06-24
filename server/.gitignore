@@ -1,2 +1,69 @@
-node_modules
+# Node modules
+node_modules/
+
+# Environment variables
 .env
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Build artifacts
+dist/
+build/
+.cache/
+.next/
+out/
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript
+*.tsbuildinfo
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Test reports
+test-output/
+test-results/
+
+# Optional: Uploaded files or temp dirs
+uploads/
+tmp/
+temp/
+
+# PM2 process logs
+pids/
+*.log
+
+# Mac system files
+.AppleDouble
+.LSOverride
+
+# Firebase or other platform specific
+.firebase/

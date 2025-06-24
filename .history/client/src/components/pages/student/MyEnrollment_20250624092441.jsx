@@ -19,7 +19,6 @@ const MyEnrollments = () => {
   const navigate = useNavigate();
 
   const [progressArray, setProgressArray] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
 
   const getCourseProgress = async () => {
     try {
@@ -51,7 +50,7 @@ const MyEnrollments = () => {
 
   useEffect(() => {
     if (userData) {
-      fetchUserEnrolledCourses().finally(() => setIsLoading(false));
+      fetchUserEnrolledCourses();
     }
   }, [userData]);
 
@@ -66,15 +65,7 @@ const MyEnrollments = () => {
       <div className="md:px-36 px-8 pt-10 pb-9">
         <h1 className="text-2xl font-semibold">My Enrollments</h1>
 
-        {isLoading ? (
-          // Loading state
-          <div className="flex items-center justify-center py-20 mt-10">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading your enrollments...</p>
-            </div>
-          </div>
-        ) : enrolledCourses.length === 0 ? (
+        {enrolledCourses.length === 0 ? (
           // Empty state layout
           <div className="flex flex-col items-center justify-center py-20 mt-10">
             <div className="text-center">

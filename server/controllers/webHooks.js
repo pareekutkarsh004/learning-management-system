@@ -3,11 +3,7 @@ import User from '../models/User.model.js'
 import Stripe from "stripe";
 import { Purchase } from "../models/Purchase.js";
 import Course from "../models/Course.js";
-<<<<<<< HEAD
-import { use } from "react";
-=======
 // import { use } from "react";
->>>>>>> main
 
 export const clerkWebhooks = async (req, res) => {
   try {

@@ -6,23 +6,6 @@ import humanizeDuration from 'humanize-duration';
 import YouTube from 'react-youtube';
 import Footer from '../../student/Footer';
 import Rating from '../../student/Rating';
-<<<<<<< HEAD
-
-function Player() {
-  const { enrolledCourses, calculateChapterTime } = useContext(AppContext);
-  const { courseId } = useParams();
-
-  const [course, setCourse] = useState(null);
-  const [expandedChapters, setExpandedChapters] = useState([]);
-  const [playerData, setPlayerData] = useState(null);
-
-  useEffect(() => {
-    const selectedCourse = enrolledCourses.find(course => course._id === courseId);
-    if (selectedCourse) {
-      setCourse(selectedCourse);
-    }
-  }, [courseId, enrolledCourses]);
-=======
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Loading from '../../student/Loading';
@@ -59,7 +42,6 @@ const getCourseData =()=>{
   //     setCourse(selectedCourse);
   //   }
   // }, [courseId, enrolledCourses]);
->>>>>>> main
 
   const toggleChapter = (index) => {
     setExpandedChapters((prev) =>
@@ -67,9 +49,6 @@ const getCourseData =()=>{
     );
   };
 
-<<<<<<< HEAD
-  return (
-=======
   useEffect(()=>{
     if(enrolledCourses.length >0){
       getCourseData()
@@ -137,7 +116,6 @@ useEffect(()=>{
 },[])
 
   return course ?(
->>>>>>> main
     <div className="min-h-screen flex flex-col">
       {/* Main Content */}
       <div className="flex-1 p-4 sm:p-10 md:px-36">
@@ -180,12 +158,8 @@ useEffect(()=>{
                             {chapter.chapterContent.map((lecture, lectureIndex) => (
                               <li key={lectureIndex} className="flex items-start gap-2 py-1">
                                 <img
-<<<<<<< HEAD
-                                  src={false ? assets.blue_tick_icon : assets.play_icon}
-=======
                                   src={progressData && progressData.lectureCompleted.includes(lecture.lectureId) ? 
                                     assets.blue_tick_icon : assets.play_icon}
->>>>>>> main
                                   alt="play icon"
                                   className="w-4 h-4 mt-1"
                                 />
@@ -241,14 +215,9 @@ useEffect(()=>{
                   <p className="font-semibold text-gray-800 mb-2 text-xl">
                     {playerData.chapter}.{playerData.lecture}{playerData.lectureTitle}
                   </p>
-<<<<<<< HEAD
-                  <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                    Mark as Completed
-=======
                   <button onClick={()=>{markLectureAsCompleted(playerData.lectureId)}} 
                   className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
                     {progressData && progressData.lectureCompleted.includes(playerData.lectureId) ? 'Completed': 'Mark as Completed'}
->>>>>>> main
                   </button>
                 </div>
               </div>
@@ -267,11 +236,7 @@ useEffect(()=>{
         {/* Rating Section */}
         <div className="mt-10">
           <h1 className="text-xl font-bold text-gray-800">Rate this Course:</h1>
-<<<<<<< HEAD
-          <Rating initialRating={0}/>
-=======
           <Rating initialRating={initialRating} onRate={handleRate}/>
->>>>>>> main
           {/* You can add star rating component or buttons here */}
         </div>
       </div>
@@ -279,11 +244,7 @@ useEffect(()=>{
       {/* Footer */}
       <Footer />
     </div>
-<<<<<<< HEAD
-  );
-=======
   ):<Loading/>
->>>>>>> main
 }
 
 export default Player;

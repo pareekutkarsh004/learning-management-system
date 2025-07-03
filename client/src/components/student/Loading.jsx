@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-
-const Loading = () => {
-=======
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -20,7 +15,6 @@ const Loading = () => {
   },[])
 
 
->>>>>>> main
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div

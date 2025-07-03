@@ -1,77 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-<<<<<<< HEAD
-import { dummyCourses } from "../assets/assets";
-import {useAuth,useUser} from "@clerk/clerk-react"
-import humanizeDuration from "humanize-duration";
-export const AppContext = createContext();
-
-export const AppContextProvider = (props) => {
-    const currency = import.meta.env.VITE_CURRENCY || "₹"; // fallback to ₹ if undefined
-    
-    const {getToken} = useAuth()
-    const {user} =useUser() 
-    const [allCourses, setAllCourses] = useState([]);
-    const [isEducator, setIsEducator] = useState(true);
-    const [enrolledCourses, setEnrolledCourses] = useState([]);
-
-    // Fetch all courses from the server or use dummy
-    const fetchAllCourses = async () => {
-        setAllCourses(dummyCourses);
-        // In real use-case, you can fetch from API here
-        // const response = await axios.get('/api/courses');
-        // setAllCourses(response.data);
-    };  //fetch enrolled courses from the server or use dummy
-    const fetchUserEnrolledCourses = async () => {
-        // In real use-case, you can fetch from API here
-        // const response = await axios.get('/api/enrolled-courses');
-        // setEnrolledCourses(response.data);
-        setEnrolledCourses(dummyCourses); // Using dummy data for now
-    };
-
-    useEffect(() => {
-        fetchAllCourses();
-        fetchUserEnrolledCourses();
-    }, []);
-
-   const logToken = async()=>{
-    console.log(await getToken());
-   }
-    useEffect(()=>{
-       if(user){
-         logToken() 
-       } 
-    },[user])
-
-    // Calculate average rating for a course
-    const calculateRating = (course) => {
-        if (!course.courseRatings || course.courseRatings.length === 0) return 0;
-        const totalRating = course.courseRatings.reduce(
-            (sum, rating) => sum + rating.rating,
-            0
-        );
-        return (totalRating / course.courseRatings.length).toFixed(1);
-    };
-
-    // ✅ Calculate chapter time
-    const calculateChapterTime = (chapter) => {
-        let time = 0;
-        chapter.chapterContent.forEach((lecture) => {
-            time += lecture.lectureDuration;
-        });
-        return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
-    };
-
-    // ✅ Calculate course duration
-    const calculateCourseDuration = (course) => {
-        let time = 0;
-        course.courseContent.forEach((chapter) => {
-            chapter.chapterContent.forEach((lecture) => {
-                time += lecture.lectureDuration;
-            });
-        });
-        return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
-    };
-=======
 import { useAuth, useUser } from "@clerk/clerk-react";
 import humanizeDuration from "humanize-duration";
 import axios from "axios";
@@ -88,6 +15,8 @@ export const AppContextProvider = ({ children }) => {
   const { user, isLoaded: userLoaded } = useUser();
 
   const [allCourses, setAllCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(false);
+  const [coursesError, setCourseError] = useState(null);
   const [isEducator, setIsEducator] = useState(false);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [userData, setUserData] = useState(null);
@@ -95,31 +24,110 @@ export const AppContextProvider = ({ children }) => {
 
   const isClerkReady = authLoaded && userLoaded;
 
+  // Configure axios defaults
+  axios.defaults.timeout = 10000; // 10 seconds timeout
+  axios.defaults.headers.common["Content-Type"] = "application/json";
+
   const fetchAllCourses = async () => {
     try {
-      // Don't send user token for public course listing
-      const response = await axios.get(`${backendURL}/api/course/all`);
+      setCoursesLoading(true);
+      setCourseError(null);
+
+      console.log(
+        "🔄 Fetching all courses from:",
+        `${backendURL}/api/course/all`
+      );
+
+      // Check if backend URL is valid
+      if (!backendURL || backendURL === "undefined") {
+        throw new Error(
+          "Backend URL is not configured. Please check your environment variables."
+        );
+      }
+
+      const response = await axios.get(`${backendURL}/api/course/all`, {
+        timeout: 10000,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("📡 Course fetch response:", response.status, response.data);
+
       const data = response.data;
 
       if (data.success) {
-        setAllCourses(data.courses);
-        console.log("✅ Courses fetched:", data.courses.length);
+        // Validate the courses data
+        const courses = Array.isArray(data.courses) ? data.courses : [];
+        setAllCourses(courses);
+        console.log("✅ Courses fetched successfully:", courses.length);
+
+        if (courses.length === 0) {
+          console.log("⚠️ No courses found in the database");
+        }
       } else {
-        toast.error(data.message || "Failed to load courses");
+        const errorMessage = data.message || "Failed to load courses";
+        console.error("❌ Course fetch failed:", errorMessage);
+        setCourseError(errorMessage);
+        toast.error(errorMessage);
       }
     } catch (error) {
       console.error("❌ Error fetching courses:", error);
 
-      // Handle specific error cases
-      if (error.response?.status === 500) {
-        console.error("Server error - check backend logs");
-        toast.error("Server error. Please try again later.");
-      } else if (error.response?.status === 400) {
-        console.error("Bad request - check API parameters");
-        toast.error("Invalid request. Please refresh the page.");
+      let errorMessage = "Failed to load courses";
+
+      if (error.code === "ECONNABORTED") {
+        errorMessage =
+          "Request timeout. Please check your internet connection.";
+      } else if (error.code === "ECONNREFUSED") {
+        errorMessage =
+          "Cannot connect to server. Please check if the backend is running.";
+      } else if (error.response) {
+        // Server responded with error
+        const status = error.response.status;
+        const data = error.response.data;
+
+        console.error("Server error details:", {
+          status,
+          statusText: error.response.statusText,
+          data,
+        });
+
+        switch (status) {
+          case 400:
+            errorMessage = data.message || "Bad request. Please try again.";
+            break;
+          case 401:
+            errorMessage = "Unauthorized. Please check your authentication.";
+            break;
+          case 403:
+            errorMessage = "Access forbidden. You don't have permission.";
+            break;
+          case 404:
+            errorMessage =
+              "Courses API endpoint not found. Please check your backend.";
+            break;
+          case 500:
+            errorMessage = "Server error. Please try again later.";
+            break;
+          default:
+            errorMessage = data.message || `Server error (${status})`;
+        }
+      } else if (error.request) {
+        // Network error
+        console.error("Network error:", error.request);
+        errorMessage =
+          "Network error. Please check your internet connection and try again.";
       } else {
-        toast.error(error.response?.data?.message || "Failed to load courses");
+        // Other errors
+        console.error("Unexpected error:", error.message);
+        errorMessage = error.message || "An unexpected error occurred";
       }
+
+      setCourseError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setCoursesLoading(false);
     }
   };
 
@@ -149,6 +157,7 @@ export const AppContextProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        timeout: 10000,
       });
 
       console.log("📡 User data API response:", response.data);
@@ -250,6 +259,7 @@ export const AppContextProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          timeout: 10000,
         }
       );
 
@@ -285,6 +295,7 @@ export const AppContextProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          timeout: 10000,
         }
       );
 
@@ -338,6 +349,7 @@ export const AppContextProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          timeout: 10000,
         }
       );
 
@@ -366,7 +378,14 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  // Retry function for courses
+  const retryCourses = () => {
+    console.log("🔄 Retrying course fetch...");
+    fetchAllCourses();
+  };
+
   useEffect(() => {
+    console.log("🚀 App starting, fetching all courses...");
     fetchAllCourses();
   }, []);
 
@@ -418,41 +437,45 @@ export const AppContextProvider = ({ children }) => {
     );
     return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
   };
->>>>>>> main
 
-    // ✅ Count total number of lectures in a course
-    // Function to calculate number of lectures in a course
-    const calculateNoOfLectures = (course) => {
-        let totalLectures = 0;
+  // Function to calculate number of lectures in a course
+  const calculateNoOfLectures = (course) => {
+    let totalLectures = 0;
 
-        course?.courseContent?.forEach((chapter) => {
-            if (Array.isArray(chapter.chapterContent)) {
-                totalLectures += chapter.chapterContent.length;
-            }
-        });
+    course?.courseContent?.forEach((chapter) => {
+      if (Array.isArray(chapter.chapterContent)) {
+        totalLectures += chapter.chapterContent.length;
+      }
+    });
 
-        return totalLectures;
-    };
+    return totalLectures;
+  };
 
+  // Context value to be provided
+  const value = {
+    currency,
+    allCourses,
+    coursesLoading,
+    coursesError,
+    retryCourses,
+    calculateRating,
+    calculateChapterTime,
+    calculateCourseDuration,
+    calculateNoOfLectures,
+    isEducator,
+    setIsEducator,
+    enrolledCourses,
+    setEnrolledCourses,
+    fetchAllCourses,
+    userData,
+    setUserData,
+    userDataLoading,
+    updateEducatorRole,
+    fetchUserData,
+    fetchUserEnrolledCourses,
+    getToken,
+    backendURL,
+  };
 
-    // ✅ Context value to be provided
-    const value = {
-        currency,
-        allCourses,
-        calculateRating,
-        calculateChapterTime,
-        calculateCourseDuration,
-        calculateNoOfLectures,
-        isEducator,
-        setIsEducator,
-        enrolledCourses,
-        setEnrolledCourses,
-        fetchAllCourses,
-    };
-
-    return (
-        <AppContext.Provider value={value}>
-            {props.children}
-        </AppContext.Provider>
-    );
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

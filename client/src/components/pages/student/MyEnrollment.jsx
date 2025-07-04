@@ -15,14 +15,15 @@ const MyEnrollments = () => {
     fetchUserEnrolledCourses,
     calculateNoOfLectures,
   } = useContext(AppContext);
-  
+
   const { getToken } = useAuth();
   const navigate = useNavigate();
 
   const [progressArray, setProgressArray] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  const backendURL =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
   const getCourseProgress = async () => {
     try {
@@ -40,11 +41,11 @@ const MyEnrollments = () => {
               {
                 courseId: course._id,
               },
-              { 
-                headers: { 
+              {
+                headers: {
                   Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json"
-                } 
+                  "Content-Type": "application/json",
+                },
               }
             );
 
@@ -55,9 +56,15 @@ const MyEnrollments = () => {
 
             return { totalLectures, lectureCompleted };
           } catch (error) {
-            console.error(`Error fetching progress for course ${course._id}:`, error);
+            console.error(
+              `Error fetching progress for course ${course._id}:`,
+              error
+            );
             // Return default progress if individual course fails
-            return { totalLectures: calculateNoOfLectures(course), lectureCompleted: 0 };
+            return {
+              totalLectures: calculateNoOfLectures(course),
+              lectureCompleted: 0,
+            };
           }
         })
       );
@@ -65,7 +72,9 @@ const MyEnrollments = () => {
       setProgressArray(tempProgressArray);
     } catch (error) {
       console.error("Error fetching course progress:", error);
-      toast.error(error.response?.data?.message || "Failed to load course progress");
+      toast.error(
+        error.response?.data?.message || "Failed to load course progress"
+      );
     }
   };
 
@@ -195,7 +204,8 @@ const MyEnrollments = () => {
                       <td className="px-4 py-3 max-sm:hidden">
                         {progress ? (
                           <>
-                            {progress.lectureCompleted} / {progress.totalLectures}
+                            {progress.lectureCompleted} /{" "}
+                            {progress.totalLectures}
                             <span className="text-gray-500 ml-1">Lectures</span>
                           </>
                         ) : (
@@ -206,8 +216,8 @@ const MyEnrollments = () => {
                       <td className="px-4 py-3 max-sm:text-right">
                         <button
                           className={`px-3 sm:px-5 py-1.5 sm:py-2 text-white max-sm:text-xs rounded transition-colors ${
-                            isCompleted 
-                              ? "bg-green-600 hover:bg-green-700" 
+                            isCompleted
+                              ? "bg-green-600 hover:bg-green-700"
                               : "bg-yellow-500 hover:bg-yellow-600"
                           }`}
                           onClick={() => navigate(`/player/${course._id}`)}

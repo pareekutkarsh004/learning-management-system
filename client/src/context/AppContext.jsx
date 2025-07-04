@@ -475,6 +475,7 @@ export const AppContextProvider = ({ children }) => {
     fetchUserEnrolledCourses,
     getToken,
     backendURL,
+    isSignedIn, // Added isSignedIn to the context value
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

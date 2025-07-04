@@ -13,7 +13,7 @@ function Navbar() {
   const { openSignIn } = useClerk();
   const { user } = useUser();
   const navigate = useNavigate();
-  const { isEducator, backendUrl, setIsEducator, getToken } =
+  const { isEducator, backendURL, setIsEducator, getToken } =
     useContext(AppContext);
 
   const becomeEducator = async () => {
@@ -26,7 +26,7 @@ function Navbar() {
         // ✅ Updated API endpoint - you can choose either one:
         // Option 1: Use the educator route
         const { data } = await axios.patch(
-          backendUrl + "/api/educator/update-role",
+          backendURL + "/api/educator/update-role",
           {}, // empty body for PATCH request
           { headers: { Authorization: `Bearer ${token}` } }
         );

@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import Loading from '../../student/Loading';
 
 function Player() {
-  const { enrolledCourses, calculateChapterTime , backendUrl, getToken, userData,
+  const { enrolledCourses, calculateChapterTime , backendURL, getToken, userData,
     fetchUserEnrolledCourses} = useContext(AppContext);
 
   const { courseId, lectureId } = useParams();
@@ -59,7 +59,7 @@ const getCourseData =()=>{
   const markLectureAsCompleted = async()=>{
     try {
       const token = await getToken();
-      const {data} = await axios.post(`${backendUrl}/api/user/update-course-progress`,
+      const {data} = await axios.post(`${backendURL}/api/user/update-course-progress`,
         {courseId,lectureId},{headers:{Authorization:`Bearer ${token}`}})
 
         if(data.success){
@@ -77,7 +77,7 @@ const getCourseData =()=>{
   const getCoureProgress = async()=>{
     try {
       const token = await getToken()
-      const {data} = await axios.post(backendUrl + 'api/user/update-course-progress',
+      const {data} = await axios.post(backendURL + 'api/user/update-course-progress',
         {courseId},{headers :{Authorization:`Bearer ${token}`}})
 
         if(data.success){
@@ -95,7 +95,7 @@ const getCourseData =()=>{
   const handleRate = async(rating)=>{
     try {
       const token = await getToken()
-      const {data} = await axios.post(backendUrl+'/api/user/add-rating',
+      const {data} = await axios.post(backendURL+'/api/user/add-rating',
         {courseId,rating},{headers:{Authorization:`Bearer ${token}`}})
 
         if(data.success){

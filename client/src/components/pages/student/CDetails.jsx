@@ -92,13 +92,13 @@ function CDetails() {
 
       console.log("🔍 Making purchase request:", {
         courseId: course._id,
-        backendUrl,
+        backendURL,
         token: token ? "present" : "missing",
       });
 
       // Make the purchase request
       const { data } = await axios.post(
-        `${backendUrl}/api/user/purchase-course`,
+        `${backendURL}/api/user/purchase-course`,
         {
           courseId: course._id,
         },

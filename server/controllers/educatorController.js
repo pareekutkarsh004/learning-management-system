@@ -149,9 +149,16 @@ export const educatorDashboardData = async (req, res) => {
 
 // ✅ Get enrolled students data
 export const getEnrolledStudentsData = async (req, res) => {
+  console.log("🎯 getEnrolledStudentsData called!"); // Add this
+  console.log("User ID:", req.auth?.userId); // Add this
+
   try {
     const educator = req.auth.userId;
+    console.log("Educator ID:", educator); // Add this
+
     const courses = await Course.find({ educator });
+    console.log("Found courses:", courses.length); // Add this
+
     const courseIds = courses.map((course) => course._id);
 
     const purchases = await Purchase.find({
@@ -161,13 +168,15 @@ export const getEnrolledStudentsData = async (req, res) => {
       .populate("userId", "name imageUrl")
       .populate("courseId", "courseTitle");
 
+    console.log("Found purchases:", purchases.length); // Add this
+
     const enrolledStudents = purchases.map((purchase) => ({
-      // ✅ Fixed typo: pruchase -> purchases
       student: purchase.userId,
       courseTitle: purchase.courseId.courseTitle,
       purchaseDate: purchase.createdAt,
     }));
 
+    console.log("Sending response with", enrolledStudents.length, "students"); // Add this
     res.json({ success: true, enrolledStudents });
   } catch (error) {
     console.error("Error in getEnrolledStudentsData:", error);

@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
-import { dummyStudentEnrolled } from "../../../assets/assets";
+// import { dummyStudentEnrolled } from "../../../assets/assets";
 import { AppContext } from "../../../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const StudentsEnrolled = () => {
-  const { backendUrl, getToken, isEducator } = useContext(AppContext);
+  const { backendURL, getToken, isEducator } = useContext(AppContext);
   const [enrolledStudents, setEnrolledStudents] = useState(null);
 
   const fetchEnrolledStudents = async () => {
     try {
       const token = await getToken();
       const { data } = await axios.get(
-        backendUrl + "/api/educator/enrolled-students",
+        backendURL + "/api/educator/enrolled-students", // ✅ Correct path
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

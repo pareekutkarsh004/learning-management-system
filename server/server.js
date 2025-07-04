@@ -29,7 +29,7 @@ console.log("✅ GridFS initialized");
 // ---------- 2. Global Middleware ----------
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"], // Add multiple origins if needed
+    origin: ["http://localhost:5173", "http://localhost:3000","https://learning-management-systemfrontend-nu.vercel.app"], // Add multiple origins if needed
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
